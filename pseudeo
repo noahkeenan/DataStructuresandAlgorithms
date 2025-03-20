@@ -1,0 +1,31 @@
+# Complexity: O(N^2) - Sorts truck packages based on shortest delivery distance
+def organize_truck_packages(ht, truck):
+    sorted_packages = []  # Holds the sorted package IDs
+    current_location = truck.hub_address
+    packages = truck.get_package_list(ht)
+
+    # Keep finding and adding the nearest package until all are sorted
+    while packages:
+        nearest = get_closest_package(current_location, packages)
+        sorted_packages.append(nearest.id_number)
+        current_location = nearest.delivery_address
+        packages.remove(nearest)
+
+    # Update the truck's package list with the sorted order
+    truck.packages_id_list = sorted_packages
+
+
+# Complexity: O(N) - Finds the closest package based on delivery distance
+def get_closest_package(current_location, packages):
+    closest = None
+    shortest_distance = float('inf')
+
+    for pkg in packages:
+        if pkg:
+            distance = distance_between(pkg.delivery_address, current_location)
+            # If this is the first package or it's closer than the current closest, update
+            if distance < shortest_distance:
+                closest = pkg
+                shortest_distance = distance
+
+    return closest
